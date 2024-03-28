@@ -45,22 +45,28 @@ class Player {
     } else if (this.x >= width) {
       this.x -= 1
     }
+
+    this.hitBoxHoriz.x = this.x-this.w;
+    this.hitBoxVert.x = this.x-this.w/2;
     
   }
 
   hits(thing) {
     return collideRectRect(
       thing.x, thing.y, thing.w, thing.h, 
-      this.x, this.y, this.w, this.h
-    );
+      this.hitBoxHoriz.x, this.hitBoxHoriz.y, this.hitBoxHoriz.w, this.hitBoxHoriz.h
+    ) || collideRectRect(
+      thing.x, thing.y, thing.w, thing.h, 
+      this.hitBoxVert.x, this.hitBoxVert.y, this.hitBoxVert.w, this.hitBoxVert.h
+    )
   }
 
   draw() {
     fill('white')
     rectMode(CORNER)
     if (debug) {
-      rect(this.x-this.w/2,this.y-this.h/2,this.w,this.h);
-      rect(this.x-this.w,this.y,this.h/1.35,this.w);
+      drawRect(this.hitBoxVert);
+      drawRect(this.hitBoxHoriz);
     }    
     image(this.image, 
       this.x-(this.w/2)-15, 

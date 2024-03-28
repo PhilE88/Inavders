@@ -19,9 +19,12 @@ class Powerup {
 
   hits(thing) {
     return collideRectCircle(
-      thing.x, thing.y, thing.w, thing.h, 
+      thing.hitBoxVert.x, thing.hitBoxVert.y, thing.hitBoxVert.w, thing.hitBoxVert.h, 
       this.pos.x, this.pos.y, this.size
-    );
+    ) || collideRectCircle(
+      thing.hitBoxHoriz.x, thing.hitBoxHoriz.y, thing.hitBoxHoriz.w, thing.hitBoxHoriz.h, 
+      this.pos.x, this.pos.y, this.size
+    )
   }
 
   draw() {

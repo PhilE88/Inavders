@@ -4,7 +4,7 @@ let player;
 let pImg;
 let eImg;
 let enemies = [];
-let numEnemiesStart = 6;
+let numEnemiesStart = 8;
 let bullets = [];
 let bulletSpeed = 0;
 let bulletMax = 1;
@@ -14,6 +14,10 @@ let numStars = 200;
 let explosions = [];
 let powerups = [];
 let chance = 2;
+
+function drawRect(obj) {
+  rect(obj.x, obj.y, obj.w, obj.h)
+}
 
 function preload() {
   pImg = loadImage(
@@ -34,7 +38,7 @@ function setup() {
   // createCanvas(400, 300);
   player = new Player(pImg);
   for (let i = 0; i < numEnemiesStart; i++) {
-    enemies[i] = new Alien(i*60+30, 60, eImg)
+    enemies[i] = new Alien(i*60+200, 50, eImg)
   }
   for (let i = 0; i < numStars; i++) {
     stars[i] = new Star();
@@ -64,6 +68,9 @@ function keyPressed() {
   }
   if (key === 'e') {
     console.log(enemies);
+  }
+  if (key === 'c') {
+    console.log(chance);
   }
 }
 
@@ -194,21 +201,26 @@ function draw() {
 
   if (player.score < 10 && enemies.length < 4) {
     generateMoreEnemies(2)
+    console.log('stage1');
   }
-  if (player.score > 10 && enemies.length < 3) {
-    generateMoreEnemies(7);
-  }
-  if (player.score > 29 && enemies.length < 4) {
-    generateMoreEnemies(10);
-  }
-  if (player.score > 49 && enemies.length < 5) {
-    generateMoreEnemies(14);
-  }
-  if (player.score > 99 && enemies.length < 3) {
-    generateMoreEnemies(18);
-  }
-  if (player.score > 199 && enemies.length < 5) {
+  if (player.score > 199 && enemies.length < 3) {
     generateMoreEnemies(30);
+    console.log('stage6');
+    chance++
+  } else if (player.score > 99 && player.score < 200 && enemies.length < 4) {
+    generateMoreEnemies(18);
+    console.log('stage5');
+    chance++
+  } else if (player.score > 49 && enemies.length < 3) {
+    generateMoreEnemies(14);
+    console.log('stage4');
+    chance++
+  } else if (player.score > 29 && enemies.length < 4) {
+    generateMoreEnemies(10);
+    console.log('stage3');
+  } else if (player.score > 10 && enemies.length < 3) {
+    generateMoreEnemies(7);
+    console.log('stage2');
   }
 
 
@@ -232,7 +244,7 @@ window.addEventListener('click', () => {
 
 function generateMoreEnemies(qty) {
   for (let i = 0; i < qty; i++) {
-    let yPos = qty > 6 ? random(60, 200) : 60;
+    let yPos = qty > 6 ? random(60, 330) : 60;
     let enem = new Alien(random(60, width-60), yPos, eImg);
     enem.vx *= random([-2, -1.5, -1, 1, 1.5, 2]);
     enemies.push(enem);

@@ -4,7 +4,9 @@ class Particle {
     this.vel = p5.Vector.random2D();
     this.vel.setMag(random(2,4))
     this.accel = createVector();
+    // this.alpha = 255;
     this.color = color(random(200,255), random(100, 255), 0)
+    // console.log(this.color.levels);
     this.size = 4;
   }
 
@@ -28,6 +30,8 @@ class Particle {
   draw() {
     push()
     strokeWeight(this.size);
+    // this.color.levels[3] -= 1;
+    // console.log(this.color.levels[3]);
     stroke(this.color);
     point(this.pos.x, this.pos.y)
     pop()
@@ -48,6 +52,8 @@ class Explosion {
       for (let particle of this.particles) {
         particle.update()
         particle.draw()
+        // particle.color.levels[3] -= 2;
+        // console.log(particle.color.levels[3]);
         if (particle.pos.x >= width || particle.pos.x <= 0 || particle.pos.y >= height || particle.pos.y <= 0) {
           let particleToRemove = this.particles.indexOf(particle);
           this.particles.splice(particleToRemove, 1);
