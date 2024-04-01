@@ -4,8 +4,13 @@ class Particle {
     this.vel = p5.Vector.random2D();
     this.vel.setMag(random(2,4))
     this.accel = createVector();
-    // this.alpha = 255;
-    this.color = color(random(200,255), random(100, 255), 0)
+    this.rgb = {
+      R: random(200,255),
+      G: random(100,255),
+      B: 0,
+      A: 255
+    }
+    this.color = color(this.rgb.R, this.rgb.G, this.rgb.B, this.rgb.A)
     // console.log(this.color.levels);
     this.size = 4;
   }
@@ -17,6 +22,8 @@ class Particle {
     // if (this.pos.x >= width) {
     //   this.vel.x = -this.vel.x
     // }
+    this.color = color(this.rgb.R, this.rgb.G, this.rgb.B, this.rgb.A)
+    this.rgb.A -= 3;
   }
 
 

@@ -38,7 +38,7 @@ function setup() {
   // createCanvas(400, 300);
   player = new Player(pImg);
   for (let i = 0; i < numEnemiesStart; i++) {
-    enemies[i] = new Alien(i*60+200, 50, eImg)
+    enemies[i] = new Alien(i*60+200, 58, eImg)
   }
   for (let i = 0; i < numStars; i++) {
     stars[i] = new Star();
