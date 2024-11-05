@@ -24,3 +24,24 @@ class Bullet {
     ellipse(this.x,this.y,this.w, this.h)
   }
 }
+
+class EnemyBullet extends Bullet {
+  constructor(x, y) {
+    super(x, y)
+    this.x = x
+    this.y = y
+    this.w = 10
+    this.h = 14
+    this.speed = 8
+  }
+
+  move() {
+    this.y += this.speed;
+  }
+
+  draw() {
+    // console.log('shoot')
+    fill('red');
+    ellipse(this.x,this.y,this.w, this.h)
+  }
+}

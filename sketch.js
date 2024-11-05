@@ -3,9 +3,11 @@ let debug = false;
 let player;
 let pImg;
 let eImg;
+let e2Img;
 let enemies = [];
 let numEnemiesStart = 8;
 let bullets = [];
+let enemyBullets = [];
 let bulletSpeed = 0;
 let bulletMax = 1;
 let gameover = false;
@@ -27,6 +29,11 @@ function preload() {
   );
   eImg = loadImage(
     '/assets/alien.png', 
+    img => console.log('Image loaded!', img), 
+    e => console.log('Error loading alien.png image', e)
+  );
+  e2Img = loadImage(
+    '/assets/alien2.png', 
     img => console.log('Image loaded!', img), 
     e => console.log('Error loading alien.png image', e)
   );
@@ -108,29 +115,51 @@ function draw() {
   enemies.forEach(enemy => {
     enemy.draw();
     enemy.move();
+    // Constantly fire bullets, looks like a laser beam
+    enemy.fire();
     
+    // enemy collides with player: game ends
     if (player.hits(enemy)) {
       gameover = true;
     }
 
+    // enemies bounce off wall and move down
     if (enemy.x < 0 || enemy.x+enemy.w > width) {
       enemy.vx *= -1
       enemy.y += enemy.h + enemy.h/2
     }
 
+    // Bullet hits enemy
     bullets.forEach(bullet => {
       if (bullet.hits(enemy)) {
+        // Add explosion effect at enemy position
         explosions.push(new Explosion(enemy.x, enemy.y));
+        // Destroy the bullet
         bullets.splice(bullets.indexOf(bullet), 1);
+        // Destroy the enemy
         enemies.splice(enemies.indexOf(enemy), 1);
+        // Score points
         player.score++;
+        // Powerup chance
         let rndChance = round(random(chance));
         let rndType = round(random(1, 3));
+        // If you're lucky
         if (rndChance == chance) {
           console.log(rndType);
+          // Win one of three prizes
           powerups.push(new Powerup(enemy.x, enemy.y, rndType))
           console.log(powerups);
         }
+      }
+    });
+
+    // Bullet hits Player
+    enemyBullets.forEach(bullet => {
+      if (bullet.hits(player) || player.hits(bullet)) {
+        // Destroy the bullet
+        bullets.splice(bullets.indexOf(bullet), 1);
+        // Destroy the player
+        gameover = true;
       }
     })
   })  
@@ -199,6 +228,16 @@ function draw() {
     })
   }
 
+  if (enemyBullets.length > 0) {    
+    enemyBullets.forEach(bullet => {
+      bullet.move();
+      bullet.draw();
+      if (bullet.y > height) {
+        enemyBullets.splice(enemyBullets.indexOf(bullet), 1);
+      }
+    })
+  }
+
   if (player.score < 10 && enemies.length < 4) {
     generateMoreEnemies(2)
     console.log('stage1');
@@ -245,8 +284,14 @@ window.addEventListener('click', () => {
 function generateMoreEnemies(qty) {
   for (let i = 0; i < qty; i++) {
     let yPos = qty > 6 ? random(60, 330) : 60;
+    // Add different enemies here
     let enem = new Alien(random(60, width-60), yPos, eImg);
+    // Without using random(x, y) coordinates, eneies pile up on themselves
+    // Illusion of stronger armor, as it takes more hits to kill
+    let enem2 = new Alien2(width/2, height/2, e2Img);
+    // Enemies random velocity factor between -2 and 2
     enem.vx *= random([-2, -1.5, -1, 1, 1.5, 2]);
     enemies.push(enem);
+    enemies.push(enem2);
   }  
 }
