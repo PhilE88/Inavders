@@ -17,6 +17,8 @@ let explosions = [];
 let powerups = [];
 let chance = 2;
 
+const BOTTOM_PAD = 12;
+
 function drawRect(obj) {
   rect(obj.x, obj.y, obj.w, obj.h)
 }
@@ -93,13 +95,29 @@ function draw() {
     stars[i].draw();
   }
   
+  // Count seconds
   s = floor(frameCount * 0.033)  
 
+  // Display text at top of screen
   fill('white')
   textSize(20)
   textAlign(LEFT)
+  // Score text
   text(`Score: ${player.score}`, 10, 22)
+  // Time text
   text(`Time: ${s}`, width-85, 22)
+  // Powerup text
+  fill('limegreen')
+  textSize(16)
+  // if (bulletMax < 9) {
+    text(`BULAMT: ${bulletMax}`, 10, height-BOTTOM_PAD);
+  // }
+  // if (bulletSpeed < 9) {
+    text(`BULSPD: ${bulletSpeed}`, (width/2) - 80, height-BOTTOM_PAD);
+  // }
+  // if (player.vx > 4) {
+    text(`MOVSPD: ${player.vx - 4}`, width - 120, height-BOTTOM_PAD)
+  // }
   if (debug) {
     text(`FPS: ${frameRate()}`, width-100, 44)
   }

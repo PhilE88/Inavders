@@ -5,7 +5,8 @@ class Player {
     this.w = 30;
     this.h = 80;
     this.x = 75;
-    this.y = height-this.w;
+    // -30 to leave room for text at bottom of screen
+    this.y = (height-this.w) - BOTTOM_PAD*3;
     this.vy = 0; 
     this.vx = 4
     // this.gravity = 0.6;
@@ -16,7 +17,7 @@ class Player {
       x: this.x-this.w/2,
       y: this.y-this.h/2,
       w: this.w,
-      h: this.h
+      h: this.h - 10
     }
     this.hitBoxHoriz = {
       x: this.x-this.w,

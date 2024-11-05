@@ -66,6 +66,8 @@ class Alien2 extends Alien {
   }
 
   fire() {
-    enemyBullets.push(new EnemyBullet(this.x, this.y))
+    if (s % 2 === 0) {
+      enemyBullets.push(new EnemyBullet(this.x, this.y))
+    }
   }
 }
