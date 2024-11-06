@@ -2,7 +2,7 @@ class Particle {
   constructor(x, y) {
     this.pos = createVector(x, y)
     this.vel = p5.Vector.random2D();
-    this.vel.setMag(random(2,4))
+    this.vel.setMag(random(2,4));
     this.accel = createVector();
     this.rgb = {
       R: random(200,255),
@@ -67,6 +67,36 @@ class Explosion {
           // console.log(this.particles);
         }
       }
+    }
+  }
+}
+
+class SmokeParticle extends Particle {
+  constructor(x,y) {
+    super(x, y)
+    this.shade = random(255);
+    this.vel = createVector(random(-2, 2), random(-8,-5));
+    this.vel.setMag(random(2,4));
+
+  }
+
+  update() {
+    this.pos.add(this.vel);
+    this.vel.add(this.accel);
+    // if (this.pos.x >= width) {
+    //   this.vel.x = -this.vel.x
+    // }
+    this.color = color(this.shade, this.rgb.A)
+    this.rgb.A -= 3;
+  }
+}
+
+class Smoke extends Explosion {
+  constructor(x,y) {
+    super(x,y)
+    this.particles = [];
+    for (let i = 0; i < this.numParticles; i++) {
+      this.particles.push(new SmokeParticle(x, y)); 
     }
   }
 }

@@ -66,9 +66,11 @@ class Alien2 extends Alien {
     this.image = img
 
     this.hp = 3;
-    this.fireRate = floor(frameCount*0.075);
+    // this.fireRate = floor(frameCount*0.075);
     this.canShoot = true;
     this.lastShot = 0;
+
+    this.smokeLevel = 0;
   }
 
   fire() {

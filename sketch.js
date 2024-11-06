@@ -14,6 +14,7 @@ let gameover = false;
 let stars = [];
 let numStars = 200;
 let explosions = [];
+let smokes = [];
 let powerups = [];
 let chance = 2;
 
@@ -43,8 +44,9 @@ function preload() {
 
 function setup() {
   // createCanvas(windowWidth, windowHeight);
-  createCanvas(800, 600);
+  createCanvas(800, 600);  
   // createCanvas(400, 300);
+  textFont('Courier New');
   player = new Player(pImg);
   for (let i = 0; i < numEnemiesStart; i++) {
     if (i % 3 === 0) {
@@ -158,6 +160,7 @@ function draw() {
       if (bullet.hits(enemy)) {
         // Damage enemy
         enemy.hp--;
+
         // Check enemy hit points
         if (enemy.hp < 1) {
           // Add explosion effect at enemy position
@@ -176,7 +179,11 @@ function draw() {
             powerups.push(new Powerup(enemy.x, enemy.y, rndType))
             // console.log(powerups);
           }
+        } else {
+          // Blow smoke
+          smokes.push(new Smoke(enemy.x, enemy.y));
         }
+
         // Destroy the bullet
         bullets.splice(bullets.indexOf(bullet), 1);
       }
@@ -200,6 +207,15 @@ function draw() {
       if (explosion.particles.length < 1) {
         let explToRemove = explosions.indexOf(explosion);
         explosions.splice(explToRemove, 1);
+      }
+    }
+  }
+  if (smokes) {
+    for (let smoke of smokes) {
+      smoke.draw();
+      if (smoke.particles.length < 1) {
+        let smokeToRemove = smokes.indexOf(smoke);
+        smokes.splice(smokeToRemove, 1);
       }
     }
   }
