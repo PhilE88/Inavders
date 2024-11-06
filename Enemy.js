@@ -34,6 +34,8 @@ class Alien extends Enemy {
     this.pos = createVector(x, y);
     this.vel = createVector(4, 0);
     this.image = img
+
+    this.hp = 1;
   }
 
   move() {
@@ -63,11 +65,24 @@ class Alien2 extends Alien {
     this.vel = createVector(4, 0);
     this.image = img
 
+    this.hp = 3;
+    this.fireRate = floor(frameCount*0.075);
+    this.canShoot = true;
+    this.lastShot = 0;
   }
 
   fire() {
-    if (s % 2 === 0) {
-      enemyBullets.push(new EnemyBullet(this.x, this.y))
+    // console.log('s', s)
+    // console.log('this.lastShot', this.lastShot)
+    if (this.lastShot+2 > s) {
+      this.canShoot = true;
     }
+    if (this.canShoot) {
+      if (s > this.lastShot) {
+        enemyBullets.push(new EnemyBullet(this.x, this.y))
+        this.canShoot = false;
+        this.lastShot = s;
+      } 
+    } 
   }
 }

@@ -47,7 +47,11 @@ function setup() {
   // createCanvas(400, 300);
   player = new Player(pImg);
   for (let i = 0; i < numEnemiesStart; i++) {
-    enemies[i] = new Alien(i*60+200, 58, eImg)
+    if (i % 3 === 0) {
+      enemies[i] = new Alien2(i*60+200, 58, e2Img);
+    } else {
+      enemies[i] = new Alien(i*60+200, 58, eImg);
+    }
   }
   for (let i = 0; i < numStars; i++) {
     stars[i] = new Star();
@@ -95,8 +99,10 @@ function draw() {
     stars[i].draw();
   }
   
+  // TIMER
   // Count seconds
-  s = floor(frameCount * 0.033)  
+  s = floor(frameCount * 0.033);
+  // console.log('frameCount', floor(frameCount*0.075))
 
   // Display text at top of screen
   fill('white')
@@ -150,24 +156,29 @@ function draw() {
     // Bullet hits enemy
     bullets.forEach(bullet => {
       if (bullet.hits(enemy)) {
-        // Add explosion effect at enemy position
-        explosions.push(new Explosion(enemy.x, enemy.y));
+        // Damage enemy
+        enemy.hp--;
+        // Check enemy hit points
+        if (enemy.hp < 1) {
+          // Add explosion effect at enemy position
+          explosions.push(new Explosion(enemy.x, enemy.y));
+          // Destroy the enemy
+          enemies.splice(enemies.indexOf(enemy), 1);
+          // Score points
+          player.score++;
+          // Powerup chance
+          let rndChance = round(random(chance));
+          let rndType = round(random(1, 3));
+          // If you're lucky
+          if (rndChance == chance) {
+            // console.log(rndType);
+            // Win one of three prizes
+            powerups.push(new Powerup(enemy.x, enemy.y, rndType))
+            // console.log(powerups);
+          }
+        }
         // Destroy the bullet
         bullets.splice(bullets.indexOf(bullet), 1);
-        // Destroy the enemy
-        enemies.splice(enemies.indexOf(enemy), 1);
-        // Score points
-        player.score++;
-        // Powerup chance
-        let rndChance = round(random(chance));
-        let rndType = round(random(1, 3));
-        // If you're lucky
-        if (rndChance == chance) {
-          console.log(rndType);
-          // Win one of three prizes
-          powerups.push(new Powerup(enemy.x, enemy.y, rndType))
-          console.log(powerups);
-        }
       }
     });
 
@@ -202,25 +213,25 @@ function draw() {
         if (powerup.type === 'playerSpeed') {
           if (player.vx < 12) {
             player.vx += 2
-            console.log('Player Speed: ', player.vx);
+            // console.log('Player Speed: ', player.vx);
           } else {
-            console.log('Player Speed MAXED: ', player.vx);
+            // console.log('Player Speed MAXED: ', player.vx);
           }
         }
         if (powerup.type === 'bulletSpeed') {
           if (bulletSpeed < 12) {
             bulletSpeed += 2
-            console.log('Bullet Speed: ', bulletSpeed);
+            // console.log('Bullet Speed: ', bulletSpeed);
           } else {
-            console.log('Bullet Speed MAXED: ', bulletSpeed);
+            // console.log('Bullet Speed MAXED: ', bulletSpeed);
           }
         }
         if (powerup.type === 'bulletMax') {
           if (bulletMax < 9) {
             bulletMax++
-            console.log('Bullet Num: ', bulletMax);
+            // console.log('Bullet Num: ', bulletMax);
           } else {
-            console.log('Bullet Num MAXED: ', bulletMax);
+            // console.log('Bullet Num MAXED: ', bulletMax);
           }          
         }
         // Remove powerup
@@ -231,7 +242,7 @@ function draw() {
         // Remove powerup
         let powerupToRemove = powerups.indexOf(powerup);
         powerups.splice(powerupToRemove, 1);
-        console.log(powerups);
+        // console.log(powerups);
       }
     }
   }
@@ -273,7 +284,9 @@ function draw() {
     console.log('stage4');
     chance++
   } else if (player.score > 29 && enemies.length < 4) {
+    // this one executes often...
     generateMoreEnemies(10);
+    generateMoreEnemies(1, 2);
     console.log('stage3');
   } else if (player.score > 10 && enemies.length < 3) {
     generateMoreEnemies(7);
@@ -299,17 +312,20 @@ window.addEventListener('click', () => {
 //   resizeCanvas(windowWidth, windowHeight);
 // }
 
-function generateMoreEnemies(qty) {
+function generateMoreEnemies(qty, lvl=0) {
+  // Add different enemies here
   for (let i = 0; i < qty; i++) {
-    let yPos = qty > 6 ? random(60, 330) : 60;
-    // Add different enemies here
-    let enem = new Alien(random(60, width-60), yPos, eImg);
-    // Without using random(x, y) coordinates, eneies pile up on themselves
-    // Illusion of stronger armor, as it takes more hits to kill
-    let enem2 = new Alien2(width/2, height/2, e2Img);
-    // Enemies random velocity factor between -2 and 2
-    enem.vx *= random([-2, -1.5, -1, 1, 1.5, 2]);
-    enemies.push(enem);
-    enemies.push(enem2);
+    let yPos = qty > 6 ? floor(random(60, 330)) : 60;
+    if (lvl > 1) {
+      // Without using random(x, y) coordinates, eneies pile up on themselves
+      // Illusion of stronger armor, as it takes more hits to kill
+      let enem2 = new Alien2(width/2, height/2, e2Img);
+      enemies.push(enem2);
+    } else {
+      let enem = new Alien(floor(random(60, width-60)), yPos, eImg);
+      // Enemies random velocity factor between -2 and 2
+      enem.vx *= random([-2, -1.5, -1, 1, 1.5, 2]);
+      enemies.push(enem);
+    }
   }  
 }

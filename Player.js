@@ -1,4 +1,3 @@
-// Fix player hitbox. Create two rect hit boxes, one for ship body, one for wings
 
 class Player {
   constructor(img) {
